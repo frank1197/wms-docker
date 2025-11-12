@@ -1,0 +1,68 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: springboot_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+      TZ: Asia/Shanghai
+    ports:
+      - "3406:3406"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6479:6479"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass redis123456
+    networks:
+      - app-network
+
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: springboot-app
+    restart: always
+#    network_mode: "host"  # 使用宿主机网络
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3406/springboot_db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: app_user
+      SPRING_DATASOURCE_PASSWORD: app_password
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6479
+      SPRING_REDIS_PASSWORD: redis123456
+      TZ: Asia/Shanghai
+      SPRING_APPLICATION_NAME: TEST-ENV-VAR  # 添加测试环境变量
+      SPRING_CONFIG_LOCATION: file:/config/application.yml
+    command: ["java", "-jar", "/app/app.jar","-Djava.library.path='lib'"]
+    # command: ["java", "-jar", "/app/app.jar", "--spring.config.location=file:/config/application.yml","-Djava.library.path='lib'"]
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - ./config/application.yml:/config/application.yml
+      - ./logs:/app/logs
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge

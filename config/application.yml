@@ -1,0 +1,62 @@
+server:
+  port: 8080
+spring:
+   application:
+    name: springboot-app-EXTERNAL-CONFIG
+   data:
+    redis:
+      host: localhost
+      port: 6479
+      password: redis123456
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+# 设备信息
+device:
+  appName: HM202305160101 # 设备应用名称(需按实际场景配置)
+  edgeId: HM202305160101 # 边缘设备ID(需按实际场景配置)
+  rfid: G81000000250401B0021 # RFID读写器ID
+  hikid-in: GA9666825 # 海康门禁设备ID(进)
+  hikid-out: # 海康门禁设备ID(出)
+mqtt:
+  broker:
+    url: tcp://host.docker.internal:1883 # MQTT代理地址(需按实际场景配置)
+    username:
+    password:
+    client-id: spring-boot-client-${random.uuid}
+    clean-session: true
+    connection-timeout: 30
+    keep-alive-interval: 60
+  topic:
+    send: /dev/${device.appName}/service/data
+    receive: /dev/${device.edgeId}/service/command
+    personin: /dev/${device.hikid-in}/service/data
+    personout: /dev/${device.hikid-out}/service/data
+wms:
+  num: 1 # 仓库编号,需要和南瑞确定(需按实际场景配置)
+  channelName:
+    outdoor: outdoor #redis接收RFID数据的频道名称
+# 图片上传配置
+img:
+  httpPath: localhost:${server.port}/img/ # 海康门禁访问图片地址
+#  httpPath: http://127.0.0.1:${server.port}/img/ # 海康门禁访问图片地址
+  path: src/main/resources/static/img     # 人脸图片实际存储地址
+hik:
+#  ip: 192.168.1.10,192.168.1.11 # 海康门禁IP地址
+  ip: 192.168.1.10 # 海康门禁IP地址
+  port: 8000  # 海康门禁端口
+  username: admin # 海康门禁用户名
+  password: hik12345 # 海康门禁密码
+logging:
+  level:
+    root: INFO
+    com.wms: DEBUG
+  file:
+    name: /app/logs/application.log
+
