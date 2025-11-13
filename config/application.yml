@@ -2,20 +2,47 @@ server:
   port: 8080
 spring:
    application:
-    name: springboot-app-EXTERNAL-CONFIG
+    name: wms-rfid-app
+
+    # MySQL 配置
+    datasource:
+      url: jdbc:mysql://mysql:3306/rfid?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true
+      username: root
+      password: EtreS_0128#
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      druid:
+        initial-size: 5
+        min-idle: 5
+        max-active: 20
+        max-wait: 60000
+        time-between-eviction-runs-millis: 60000
+        min-evictable-idle-time-millis: 300000
+        validation-query: SELECT 1
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        pool-prepared-statements: true
+        max-pool-prepared-statement-per-connection-size: 20
+
+  # Redis 配置
    data:
-    redis:
-      host: localhost
-      port: 6479
-      password: redis123456
-      database: 0
-      timeout: 3000ms
-      lettuce:
-        pool:
-          max-active: 8
-          max-idle: 8
-          min-idle: 0
-          max-wait: -1ms
+     redis:
+       host: redis
+       port: 6379
+       password: redis123456
+       database: 0
+       timeout: 60000ms
+       connect-timeout: 10000ms
+       lettuce:
+         pool:
+           max-active: 8
+           max-idle: 8
+           min-idle: 0
+           max-wait: -1ms
+           time-between-eviction-runs: 60000ms
+         shutdown-timeout: 100ms
+
 
 # 设备信息
 device:

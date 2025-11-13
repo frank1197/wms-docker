@@ -1,0 +1,10 @@
+# 重新构建镜像
+docker compose down
+# 清理无用镜像和容器
+docker system prune -a -f
+# 构建并启动
+docker compose up -d --build
+
+docker compose logs -f springboot-app
+
+docker compose exec springboot-app sh
