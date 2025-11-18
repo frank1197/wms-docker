@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root123456
-      MYSQL_DATABASE: springboot_db
+      MYSQL_DATABASE: rfid
       MYSQL_USER: app_user
       MYSQL_PASSWORD: app_password
       TZ: Asia/Shanghai
@@ -16,6 +16,13 @@ services:
       - ./mysql/conf:/etc/mysql/conf.d
       - ./mysql/init:/docker-entrypoint-initdb.d
     command: --default-authentication-plugin=mysql_native_password
+    # 添加健康检查
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pEtreS_0128#" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - app-network
 
@@ -28,6 +35,12 @@ services:
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes --requirepass redis123456
+    # 添加健康检查
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "redis123456", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - app-network
 
@@ -60,9 +73,9 @@ services:
       - "8080:8080"
 #    network_mode: "host"  # 使用宿主机网络
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3406/springboot_db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: app_user
-      SPRING_DATASOURCE_PASSWORD: app_password
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/rfid?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root123456
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6479
       SPRING_REDIS_PASSWORD: redis123456
