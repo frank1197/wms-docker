@@ -1,4 +1,4 @@
-# 重新构建镜像
+# 停止构建镜像
 docker compose down
 # 清理无用镜像和容器
 docker system prune -a -f

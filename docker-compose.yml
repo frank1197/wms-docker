@@ -112,6 +112,19 @@ services:
     networks:
       - app-network
 
+  wms-dashboard:
+    image: nginx:alpine
+    container_name: wms-dashboard
+    restart: always
+    ports:
+      - "5173:80"
+    volumes:
+      - ./frontend-dist:/usr/share/nginx/html:ro
+    depends_on:
+      - springboot-app
+    networks:
+      - app-network
+
 volumes:
   mysql_data:
   redis_data:
