@@ -69,12 +69,12 @@ mqtt:
 wms:
   num: 1 # 仓库编号,需要和南瑞确定(需按实际场景配置)
   channelName:
-    outdoor: outdoor #redis接收RFID数据的频道名称
+    outdoor: RFID-SEL #redis接收RFID数据的频道名称
 # 图片上传配置
 img:
   httpPath: localhost:${server.port}/img/ # 海康门禁访问图片地址
 #  httpPath: http://127.0.0.1:${server.port}/img/ # 海康门禁访问图片地址
-  path: src/main/resources/static/img     # 人脸图片实际存储地址
+  path: HIKIMG/static/image/     # 人脸图片实际存储地址
 hik:
 #  ip: 192.168.1.10,192.168.1.11 # 海康门禁IP地址
   ip: 192.168.1.10 # 海康门禁IP地址
