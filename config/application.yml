@@ -53,9 +53,9 @@ device:
   hikid-out: # 海康门禁设备ID(出)
 mqtt:
   broker:
-    url: tcp://host.docker.internal:1883 # MQTT代理地址(需按实际场景配置)
-    username:
-    password:
+    url: tcp://192.168.1.101:11883 # MQTT代理地址(需按实际场景配置)
+    username: admin
+    password: Nari!2483
     client-id: spring-boot-client-${random.uuid}
     clean-session: true
     connection-timeout: 30
@@ -69,7 +69,10 @@ mqtt:
 wms:
   num: 1 # 仓库编号,需要和南瑞确定(需按实际场景配置)
   channelName:
-    outdoor: RFID-SEL #redis接收RFID数据的频道名称
+    outdoor: SEND_OUT_FLG #redis接收RFID数据的频道名称
+    # indoor: SEND_IN_FLG   #redis接收RFID数据的频道名称
+    facetime: FACE_TIME #redis标识，非channel
+    RedisRfidIn: IN_PORT
 # 图片上传配置
 img:
   httpPath: localhost:${server.port}/img/ # 海康门禁访问图片地址

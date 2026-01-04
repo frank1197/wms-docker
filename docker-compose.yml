@@ -63,6 +63,27 @@ services:
     networks:
       - app-network
 
+  # 第二个 Go RFID 服务
+  rfid-server2:
+    build:
+      context: ./rfid-server2
+      dockerfile: Dockerfile
+    container_name: rfid-server2
+    restart: always
+    ports:
+      # 将主机端口 18899 映射到容器的 18898 端口，以避免与 rfid-server 冲突
+      - "18899:18899"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis123456
+      TZ: Asia/Shanghai
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+
   springboot-app:
     build:
       context: .
