@@ -1,6 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: mysql8
     restart: always
     environment:
@@ -15,7 +16,9 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql/conf:/etc/mysql/conf.d
       - ./mysql/init:/docker-entrypoint-initdb.d
-    command: --default-authentication-plugin=mysql_native_password
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --lower_case_table_names=1
     # 添加健康检查
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pEtreS_0128#" ]
@@ -28,13 +31,14 @@ services:
 
   redis:
     image: redis:7.0-alpine
+    platform: linux/amd64
     container_name: redis
     restart: always
     ports:
       - "6479:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes --requirepass redis123456
+    command: redis-server --appendonly yes --requirepass redis123456 --dir /data
     # 添加健康检查
     healthcheck:
       test: [ "CMD", "redis-cli", "-a", "redis123456", "ping" ]
@@ -149,6 +153,7 @@ services:
 volumes:
   mysql_data:
   redis_data:
+    driver: local
 
 networks:
   app-network:
