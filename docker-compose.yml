@@ -16,9 +16,7 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql/conf:/etc/mysql/conf.d
       - ./mysql/init:/docker-entrypoint-initdb.d
-    command:
-      - --default-authentication-plugin=mysql_native_password
-      - --lower_case_table_names=1
+    command: --default-authentication-plugin=mysql_native_password
     # 添加健康检查
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pEtreS_0128#" ]
